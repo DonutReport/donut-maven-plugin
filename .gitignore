@@ -2,6 +2,8 @@
 *.log
 *report.html
 
+release.properties
+
 # sbt specific
 .cache
 .history
