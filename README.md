@@ -12,8 +12,8 @@ in your `pom.xml` add the plugin with the following configuration:
 
 ```
 <plugin>
-    <groupId>io.magentys.maven</groupId>
-    <artifactId>donut-plugin</artifactId>
+    <groupId>io.magentys</groupId>
+    <artifactId>donut-maven-plugin</artifactId>
     <version>0.0.1</version>
     <executions>
         <execution>
