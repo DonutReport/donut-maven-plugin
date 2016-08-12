@@ -94,7 +94,14 @@ public class DonutMojo extends AbstractMojo {
                     countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
 
             if (reportConsole.buildFailed()) {
-                throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
+
+                //Putting this condition as build could fail because of other reasons as well.
+                if (numberOfFailedScenarios > 0) {
+                    throw new MojoExecutionException(String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
+                } else {
+                    throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                }
             }
 
         } catch (Exception e) {
