@@ -90,7 +90,7 @@ public class DonutMojo extends AbstractMojo {
             }
 
             getLog().info("Generating reports...");
-            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix, timestamp, template,
+            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), getPrefix(), timestamp, template,
                     countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
 
             if (reportConsole.buildFailed()) {
@@ -103,11 +103,14 @@ public class DonutMojo extends AbstractMojo {
                     throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
                 }
             }
-
         } catch (Exception e) {
             throw new MojoExecutionException("Error Found:", e);
         }
 
+    }
+
+    private String getPrefix() {
+        return prefix == null ? "" : prefix;
     }
 
 }
