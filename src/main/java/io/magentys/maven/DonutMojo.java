@@ -16,9 +16,6 @@
  */
 package io.magentys.maven;
 
-import io.magentys.donut.gherkin.Generator;
-import io.magentys.donut.gherkin.model.ReportConsole;
-
 import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -26,6 +23,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+
+import io.magentys.donut.gherkin.Generator;
+import io.magentys.donut.gherkin.model.ReportConsole;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.VERIFY)
 public class DonutMojo extends AbstractMojo {
@@ -78,34 +78,43 @@ public class DonutMojo extends AbstractMojo {
     @Parameter(property = "projectVersion", defaultValue = "")
     private String projectVersion;
 
+    @Parameter(property = "skip", defaultValue = "false")
+    private boolean skip;
+
     public void execute() throws MojoExecutionException {
 
-        try {
-            if (!sourceDirectory.exists()) {
-                throw new MojoExecutionException("BUILD FAILED - as the source directory does not exist");
-            }
-
-            if (!outputDirectory.exists()) {
-                outputDirectory.mkdirs();
-            }
-
-            getLog().info("Generating reports...");
-            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix, timestamp, template,
-                    countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
-
-            if (reportConsole.buildFailed()) {
-                int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
-
-                //Putting this condition as build could fail because of other reasons as well.
-                if (numberOfFailedScenarios > 0) {
-                    throw new MojoExecutionException(String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
-                } else {
-                    throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+        if (skip) {
+            getLog().info("Skipping generating reports...");
+        } else {
+            try {
+                if (!sourceDirectory.exists()) {
+                    throw new MojoExecutionException("BUILD FAILED - as the source directory does not exist");
                 }
-            }
 
-        } catch (Exception e) {
-            throw new MojoExecutionException("Error Found:", e);
+                if (!outputDirectory.exists()) {
+                    outputDirectory.mkdirs();
+                }
+
+                getLog().info("Generating reports...");
+                ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix, timestamp,
+                        template,
+                        countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
+
+                if (reportConsole.buildFailed()) {
+                    int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
+
+                    // Putting this condition as build could fail because of other reasons as well.
+                    if (numberOfFailedScenarios > 0) {
+                        throw new MojoExecutionException(
+                                String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
+                    } else {
+                        throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+                    }
+                }
+
+            } catch (Exception e) {
+                throw new MojoExecutionException("Error Found:", e);
+            }
         }
 
     }
