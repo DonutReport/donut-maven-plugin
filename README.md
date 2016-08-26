@@ -71,6 +71,15 @@ Example:
 </properties>
 ```
 
+### Contributing
+
+To contribute:
+
+* Create an integration test to demonstrate the behaviour under `src/it/`.  For example, to add support to default the report prefix to an empty string:
+    * Create src/it/default-empty-prefix
+    * Copy the contents of the src/it/default-empty-prefix directory and update the pom as appropriate to demonstrate the configuration.  Update the verify.groovy to implement the test for your feature.
+    * Run `mvn clean install -Prun-its` to run the integration tests.
+
 ### License
 
 This project is under an MIT license

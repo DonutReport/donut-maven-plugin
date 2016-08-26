@@ -1,0 +1,91 @@
+[
+  {
+    "comments": [
+      {
+        "line": 1,
+        "value": "# encoding: ISO-8859-1"
+      }
+    ],
+    "line": 3,
+    "elements": [
+      {
+        "line": 6,
+        "name": "test1",
+        "description": "",
+        "id": "test1;test-scenario1",
+        "after": [
+          {
+            "result": {
+              "duration": 306995,
+              "status": "passed"
+            },
+            "match": {
+              "location": "TestStepDef.afterScenario()"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Scenario",
+        "steps": [
+          {
+            "result": {
+              "duration": 8016477587,
+              "status": "passed"
+            },
+            "line": 7,
+            "name": "I perform an action",
+            "match": {
+              "arguments": [
+                {
+                  "val": "7000",
+                  "offset": 34
+                }
+              ],
+              "location": "TestStepDef.i_perform_an_action()"
+            },
+            "keyword": "Given "
+          },
+          {
+            "result": {
+              "duration": 4013886,
+              "status": "passed"
+            },
+            "line": 8,
+            "name": "I should see an expected outcome",
+            "match": {
+              "arguments": [
+                {
+                  "val": "3000",
+                  "offset": 42
+                }
+              ],
+              "location": "TestStepDef.i_should_see_an_expected_outcome()"
+            },
+            "keyword": "Then "
+          }
+        ],
+        "tags": [
+          {
+            "line": 5,
+            "name": "@complete"
+          }
+        ]
+      }
+    ],
+    "name": "test1",
+    "description": "",
+    "id": "test1",
+    "keyword": "Feature",
+    "uri": "features/test1.feature",
+    "tags": [
+      {
+        "line": 2,
+        "name": "@test1"
+      },
+      {
+        "line": 2,
+        "name": "@test"
+      }
+    ]
+  }
+]

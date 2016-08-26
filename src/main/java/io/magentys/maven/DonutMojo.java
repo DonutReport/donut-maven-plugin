@@ -43,7 +43,8 @@ public class DonutMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
-     * Generated file prefix. example "filePrefix-" would generate filePrefix-donut-report.html
+     * Generated file prefix. example "filePrefix-" would generate
+     * filePrefix-donut-report.html
      */
     @Parameter(property = "prefix")
     private String prefix;
@@ -85,38 +86,41 @@ public class DonutMojo extends AbstractMojo {
 
         if (skip) {
             getLog().info("Skipping generating reports...");
-        } else {
-            try {
-                if (!sourceDirectory.exists()) {
-                    throw new MojoExecutionException("BUILD FAILED - as the source directory does not exist");
-                }
-
-                if (!outputDirectory.exists()) {
-                    outputDirectory.mkdirs();
-                }
-
-                getLog().info("Generating reports...");
-                ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix, timestamp,
-                        template,
-                        countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
-
-                if (reportConsole.buildFailed()) {
-                    int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
-
-                    // Putting this condition as build could fail because of other reasons as well.
-                    if (numberOfFailedScenarios > 0) {
-                        throw new MojoExecutionException(
-                                String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
-                    } else {
-                        throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
-                    }
-                }
-
-            } catch (Exception e) {
-                throw new MojoExecutionException("Error Found:", e);
-            }
+            return;
         }
 
+        try {
+            if (!sourceDirectory.exists()) {
+                throw new MojoExecutionException("BUILD FAILED - as the source directory does not exist");
+            }
+
+            if (!outputDirectory.exists()) {
+                outputDirectory.mkdirs();
+            }
+
+            getLog().info("Generating reports...");
+            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), getPrefix(),
+                    timestamp, template,
+                    countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
+
+            if (reportConsole.buildFailed()) {
+                int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
+
+                // Putting this condition as build could fail because of other reasons as well.
+                if (numberOfFailedScenarios > 0)
+                    throw new MojoExecutionException(
+                            String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
+
+                throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
+            }
+        } catch (Exception e) {
+            throw new MojoExecutionException("Error Found:", e);
+        }
+
+    }
+
+    private String getPrefix() {
+        return prefix == null ? "" : prefix;
     }
 
 }
