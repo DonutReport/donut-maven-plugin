@@ -16,9 +16,6 @@
  */
 package io.magentys.maven;
 
-import io.magentys.donut.gherkin.Generator;
-import io.magentys.donut.gherkin.model.ReportConsole;
-
 import java.io.File;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -26,6 +23,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+
+import io.magentys.donut.gherkin.Generator;
+import io.magentys.donut.gherkin.model.ReportConsole;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.VERIFY)
 public class DonutMojo extends AbstractMojo {
@@ -43,7 +43,8 @@ public class DonutMojo extends AbstractMojo {
     private File outputDirectory;
 
     /**
-     * Generated file prefix. example "filePrefix-" would generate filePrefix-donut-report.html
+     * Generated file prefix. example "filePrefix-" would generate
+     * filePrefix-donut-report.html
      */
     @Parameter(property = "prefix")
     private String prefix;
@@ -78,7 +79,15 @@ public class DonutMojo extends AbstractMojo {
     @Parameter(property = "projectVersion", defaultValue = "")
     private String projectVersion;
 
+    @Parameter(property = "skip", defaultValue = "false")
+    private boolean skip;
+
     public void execute() throws MojoExecutionException {
+
+        if (skip) {
+            getLog().info("Skipping generating reports...");
+            return;
+        }
 
         try {
             if (!sourceDirectory.exists()) {
@@ -90,18 +99,19 @@ public class DonutMojo extends AbstractMojo {
             }
 
             getLog().info("Generating reports...");
-            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), getPrefix(), timestamp, template,
+            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), getPrefix(),
+                    timestamp, template,
                     countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
 
             if (reportConsole.buildFailed()) {
                 int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
 
-                //Putting this condition as build could fail because of other reasons as well.
-                if (numberOfFailedScenarios > 0) {
-                    throw new MojoExecutionException(String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
-                } else {
-                    throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
-                }
+                // Putting this condition as build could fail because of other reasons as well.
+                if (numberOfFailedScenarios > 0)
+                    throw new MojoExecutionException(
+                            String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
+
+                throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error Found:", e);
