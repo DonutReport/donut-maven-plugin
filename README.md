@@ -27,6 +27,18 @@ in your `pom.xml` add the plugin with the following configuration:
                 <outputDirectory>${project.build.directory}/donut</outputDirectory>
                 <timestamp>${maven.build.timestamp}</timestamp>
                 <template>default</template>
+                <projectName>${project.name}</projectName>
+                <!-- optional -->
+                <customAttributes>
+                   <customAttribute>
+                      <name>My Custom 1</name>
+                      <value>custom123</value>
+                   </customAttribute>
+                   <customAttribute>
+                      <name>App Name</name>
+                      <value>${app.name}</value>
+                   </customAttribute>
+                </customAttributes>
             </configuration>
         </execution>
     </executions>
@@ -47,6 +59,7 @@ in your `pom.xml` add the plugin with the following configuration:
 <countMissingAsFailure>
 <projectName>
 <projectVersion>
+<customAttributes>
 ```
 
 default values:
@@ -58,6 +71,7 @@ default values:
 * **countSkippedAsFailure**, **countPendingAsFailure**, **countUndefinedAsFailure**, **countMissingAsFailure**: are boolean values, and by default they are set to `false`. 
 * **projectName** : is a string value
 * **projectVersion** : is a string value
+* **customAttributes** : is a map of name/value pairs
 
 #### report timestamp
 

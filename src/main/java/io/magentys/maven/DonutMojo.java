@@ -16,16 +16,18 @@
  */
 package io.magentys.maven;
 
-import java.io.File;
-
+import io.magentys.donut.gherkin.Generator;
+import io.magentys.donut.gherkin.model.ReportConsole;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import scala.collection.JavaConverters;
 
-import io.magentys.donut.gherkin.Generator;
-import io.magentys.donut.gherkin.model.ReportConsole;
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.VERIFY)
 public class DonutMojo extends AbstractMojo {
@@ -79,11 +81,13 @@ public class DonutMojo extends AbstractMojo {
     @Parameter(property = "projectVersion", defaultValue = "")
     private String projectVersion;
 
+    @Parameter(property = "customAttributes")
+    private List<CustomAttribute> customAttributes;
+
     @Parameter(property = "skip", defaultValue = "false")
     private boolean skip;
 
     public void execute() throws MojoExecutionException {
-
         if (skip) {
             getLog().info("Skipping generating reports...");
             return;
@@ -99,9 +103,10 @@ public class DonutMojo extends AbstractMojo {
             }
 
             getLog().info("Generating reports...");
-            ReportConsole reportConsole = Generator.apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), getPrefix(),
-                    timestamp, template,
-                    countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion);
+            ReportConsole reportConsole = Generator
+                    .apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix(), timestamp, template,
+                            countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion,
+                            customAttributes());
 
             if (reportConsole.buildFailed()) {
                 int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
@@ -116,11 +121,14 @@ public class DonutMojo extends AbstractMojo {
         } catch (Exception e) {
             throw new MojoExecutionException("Error Found:", e);
         }
-
     }
 
-    private String getPrefix() {
+    private scala.collection.mutable.Map<String, String> customAttributes() {
+        return JavaConverters.mapAsScalaMapConverter(customAttributes.stream().collect(Collectors.toMap(c -> c.getName(), c -> c.getValue())))
+                .asScala();
+    }
+
+    private String prefix() {
         return prefix == null ? "" : prefix;
     }
-
 }
