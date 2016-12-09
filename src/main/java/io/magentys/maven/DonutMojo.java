@@ -105,7 +105,7 @@ public class DonutMojo extends AbstractMojo {
 
         try {
             if (!sourceDirectory.exists()) {
-                throw new MojoExecutionException("BUILD FAILED - as the source directory does not exist");
+                throw new MojoExecutionException("BUILD FAILED - The source directory does not exist");
             }
 
             if (!outputDirectory.exists()) {
@@ -117,6 +117,8 @@ public class DonutMojo extends AbstractMojo {
                     .apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix(), timestamp, template,
                             countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion,
                             customAttributes());
+            //TODO Remove once zip functionality has been added to donut
+            zipDonutReport();
 
             if (reportConsole.buildFailed()) {
                 int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
@@ -128,9 +130,6 @@ public class DonutMojo extends AbstractMojo {
 
                 throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
             }
-
-            //TODO Remove once zip functionality has been added to donut
-            zipDonutReport();
         } catch (Exception e) {
             throw new MojoExecutionException("Error Found:", e);
         }
