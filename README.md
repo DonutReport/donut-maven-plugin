@@ -63,7 +63,7 @@ in your `pom.xml` add the plugin with the following configuration:
 ```
 
 default values:
-* **sourceDirectory** : is mandatory is mandatory and it should be the directory that hold the generated JSON files to be visualised.
+* **sourceDirectory** : is mandatory and it should be the directory that hold the generated JSON files to be visualised.
 * **outputDirectory** : by default a `donut` folder will be generated
 * **prefix** : the generated file is `donut-report.html`, however you can specify prefix i.e. `myproject-`
 * **timestamp** : refers to the start time of your execution. If not specified by the user reports will use `now`
