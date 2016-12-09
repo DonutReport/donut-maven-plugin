@@ -18,6 +18,15 @@ package io.magentys.maven;
 
 import io.magentys.donut.gherkin.Generator;
 import io.magentys.donut.gherkin.model.ReportConsole;
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.RegexFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -25,8 +34,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import scala.collection.JavaConverters;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.VERIFY)
@@ -111,13 +121,16 @@ public class DonutMojo extends AbstractMojo {
             if (reportConsole.buildFailed()) {
                 int numberOfFailedScenarios = reportConsole.numberOfFailedScenarios();
 
-                // Putting this condition as build could fail because of other reasons as well.
+                // The build could fail because of other reasons.
                 if (numberOfFailedScenarios > 0)
                     throw new MojoExecutionException(
                             String.format("BUILD FAILED - There were %d test failures. - Check Report For Details)", numberOfFailedScenarios));
 
                 throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
             }
+
+            //TODO Remove once zip functionality has been added to donut
+            zipDonutReport();
         } catch (Exception e) {
             throw new MojoExecutionException("Error Found:", e);
         }
@@ -130,5 +143,18 @@ public class DonutMojo extends AbstractMojo {
 
     private String prefix() {
         return prefix == null ? "" : prefix;
+    }
+
+    private void zipDonutReport() throws IOException, ArchiveException {
+        Optional<File> file = FileUtils.listFiles(outputDirectory, new RegexFileFilter("^(.*)donut-report.html$"), TrueFileFilter.INSTANCE).stream().findFirst();
+        if (!file.isPresent())
+            throw new FileNotFoundException(String.format("Cannot find a donut report in folder: %s", outputDirectory.getAbsolutePath()));
+        File zipFile = new File(outputDirectory, FilenameUtils.removeExtension(file.get().getName()) + ".zip");
+        try (OutputStream os = new FileOutputStream(zipFile); ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP, os); BufferedInputStream is = new BufferedInputStream(new FileInputStream(file.get()))) {
+            aos.putArchiveEntry(new ZipArchiveEntry(file.get().getName()));
+            IOUtils.copy(is, aos);
+            aos.closeArchiveEntry();
+            aos.finish();
+        }
     }
 }
