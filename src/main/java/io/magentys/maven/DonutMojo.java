@@ -45,8 +45,8 @@ public class DonutMojo extends AbstractMojo {
     /**
      * Location of the json files.
      */
-    @Parameter(property = "sourceDirectory", required = true, defaultValue = "${project.build.directory}/cucumber-reports")
-    private File sourceDirectory;
+    @Parameter(property = "sourceDirectories", required = true, defaultValue = "cucumber:${project.build.directory}/cucumber-reports")
+    private String sourceDirectories;
 
     /**
      * Location for the report. Default is ${project.build.directory}/donut
@@ -104,9 +104,6 @@ public class DonutMojo extends AbstractMojo {
         }
 
         try {
-            if (!sourceDirectory.exists()) {
-                throw new MojoExecutionException("BUILD FAILED - The source directory does not exist");
-            }
 
             if (!outputDirectory.exists()) {
                 outputDirectory.mkdirs();
@@ -114,7 +111,7 @@ public class DonutMojo extends AbstractMojo {
 
             getLog().info("Generating reports...");
             ReportConsole reportConsole = Generator
-                    .apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix(), timestamp, template,
+                    .apply(sourceDirectories, outputDirectory.getAbsolutePath(), prefix(), timestamp, template,
                             countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion,
                             customAttributes());
             //TODO Remove once zip functionality has been added to donut
