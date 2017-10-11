@@ -56,8 +56,8 @@
     </developers>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:MagenTys/donut-maven-plugin.git</developerConnection>
-        <url>https://github.com/MagenTys/donut-maven-plugin</url>
+        <developerConnection>scm:git:git@github.com:DonutReport/donut-maven-plugin.git</developerConnection>
+        <url>https://github.com/DonutReport/donut-maven-plugin</url>
         <tag>HEAD</tag>
     </scm>
 

@@ -1,10 +1,10 @@
-![](http://magentys.github.io/donut/img/Donut-05.png)
+![](http://donutreport.github.io/donut/img/Donut-05.png)
 
-[![Build Status](https://travis-ci.org/MagenTys/donut-maven-plugin.svg?branch=master)](https://travis-ci.org/MagenTys/donut-maven-plugin) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.magentys/donut-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.magentys/donut-maven-plugin)
+[![Build Status](https://travis-ci.org/DonutReport/donut-maven-plugin.svg?branch=master)](https://travis-ci.org/DonutReport/donut-maven-plugin) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/report.donut/donut-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/report.donut/donut-maven-plugin)
 
 ## donut-maven-plugin
 
-This is a maven plugin for donut. More about donut [here](http://github.com/MagenTys/donut).
+This is a maven plugin for donut. More about donut [here](http://github.com/DonutReport/donut).
 
 ## usage
 
@@ -12,7 +12,7 @@ in your `pom.xml` add the plugin with the following configuration:
 
 ```
 <plugin>
-    <groupId>io.magentys</groupId>
+    <groupId>report.donut</groupId>
     <artifactId>donut-maven-plugin</artifactId>
     <version>0.0.5</version>
     <executions>
@@ -98,4 +98,4 @@ To contribute:
 
 This project is under an MIT license
 
-Powered by: [MagenTys](http://magentys.io)
+Powered by: [MagenTys](http://magentys.io), [MechanicalRock](https://www.mechanicalrock.io/#/)
