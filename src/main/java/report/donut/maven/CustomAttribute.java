@@ -1,4 +1,4 @@
-package io.magentys.maven;
+package report.donut.maven;
 
 public class CustomAttribute {
 

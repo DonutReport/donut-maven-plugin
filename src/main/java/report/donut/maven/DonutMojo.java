@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package io.magentys.maven;
+package report.donut.maven;
 
 import io.magentys.donut.gherkin.Generator;
 import io.magentys.donut.gherkin.model.ReportConsole;
