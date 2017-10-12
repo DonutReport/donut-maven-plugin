@@ -98,4 +98,4 @@ To contribute:
 
 This project is under an MIT license
 
-Powered by: [MagenTys](http://magentys.io), [MechanicalRock](https://www.mechanicalrock.io/#/)
+Powered by: [MagenTys](https://magentys.io), [Mechanical Rock](https://www.mechanicalrock.io)
