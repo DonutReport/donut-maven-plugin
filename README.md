@@ -14,7 +14,7 @@ in your `pom.xml` add the plugin with the following configuration:
 <plugin>
     <groupId>report.donut</groupId>
     <artifactId>donut-maven-plugin</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <executions>
         <execution>
             <id>execution</id>
@@ -44,6 +44,9 @@ in your `pom.xml` add the plugin with the following configuration:
     </executions>
 </plugin>
 ```
+
+For older versions, use groupId as `io.magentys` and appropriate version.
+
 
 #### all configuration parameters
 
