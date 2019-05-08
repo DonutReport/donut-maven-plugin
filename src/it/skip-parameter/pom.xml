@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.magentys.it</groupId>
+    <groupId>report.donut.it</groupId>
     <artifactId>default-empty-prefix</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -15,9 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.magentys</groupId>
+            <groupId>report.donut</groupId>
             <artifactId>donut</artifactId>
-            <version>0.0.3</version>
+            <version>1.2.1</version>
         </dependency>
     </dependencies>
 
@@ -35,8 +35,13 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>@project.build.directory@/it/skip-parameter/cucumber-reports</sourceDirectory>
-                            <outputDirectory>@project.build.directory@/it/skip-parameter/donut/</outputDirectory>
+                            <resultSources>
+                                <resultSource>
+                                    <format>cucumber</format>
+                                    <directory>@project.basedir@/src/it/results/cucumber1</directory>
+                                </resultSource>
+                            </resultSources>
+                            <outputPath>@project.build.directory@/it/skip-parameter/donut</outputPath>
                             <template>default</template>
                             <projectName>skip-parameter</projectName>
                             <projectVersion>0.1-SNAPSHOT</projectVersion>
