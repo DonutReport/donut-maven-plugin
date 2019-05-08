@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>report.donut.it</groupId>
-    <artifactId>default-empty-prefix</artifactId>
+    <artifactId>multiple-resultsources</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <description>Generate Donut report</description>
@@ -37,13 +37,15 @@
                         <configuration>
                             <resultSources>
                                 <resultSource>
-                                    <format>cucumber</format>
                                     <directory>@project.basedir@/src/it/results/cucumber1</directory>
                                 </resultSource>
+                                <resultSource>
+                                    <directory>@project.basedir@/src/it/results/cucumber2</directory>
+                                </resultSource>
                             </resultSources>
-                            <outputPath>@project.build.directory@/it/default-empty-prefix/donut</outputPath>
+                            <outputPath>@project.build.directory@/it/multiple-resultsources/donut</outputPath>
                             <template>default</template>
-                            <projectName>default-empty-prefix</projectName>
+                            <projectName>multiple-resultsources</projectName>
                             <projectVersion>0.1-SNAPSHOT</projectVersion>
                         </configuration>
                     </execution>

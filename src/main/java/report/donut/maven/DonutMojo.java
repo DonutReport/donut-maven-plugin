@@ -16,8 +16,6 @@
  */
 package report.donut.maven;
 
-import io.magentys.donut.gherkin.Generator;
-import io.magentys.donut.gherkin.model.ReportConsole;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -32,6 +30,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import report.donut.Generator;
+import report.donut.gherkin.model.ReportConsole;
 import scala.collection.JavaConverters;
 
 import java.io.*;
@@ -43,16 +43,21 @@ import java.util.stream.Collectors;
 public class DonutMojo extends AbstractMojo {
 
     /**
-     * Location of the json files.
+     * List of result sources, e.g. <pre>{@code
+     *     <resultSources>
+     *         <resultSource>${project.build.directory}/cucumber-reports</resultSource>
+     *         <resultSource>/path/to/adapted/failsafe-reports</resultSource>
+     *     </resultSources>
+     * }</pre>
      */
-    @Parameter(property = "sourceDirectory", required = true, defaultValue = "${project.build.directory}/cucumber-reports")
-    private File sourceDirectory;
+    @Parameter(property = "resultSources", required = true)
+    private List<ResultSource> resultSources;
 
     /**
-     * Location for the report. Default is ${project.build.directory}/donut
+     * Location for the donut report. Default is ${project.build.directory}/donut
      */
-    @Parameter(property = "outputDirectory", defaultValue = "${project.build.directory}/donut")
-    private File outputDirectory;
+    @Parameter(property = "outputPath", defaultValue = "${project.build.directory}/donut")
+    private File outputPath;
 
     /**
      * Generated file prefix. example "filePrefix-" would generate
@@ -104,19 +109,11 @@ public class DonutMojo extends AbstractMojo {
         }
 
         try {
-            if (!sourceDirectory.exists()) {
-                throw new MojoExecutionException("BUILD FAILED - The source directory does not exist");
-            }
-
-            if (!outputDirectory.exists()) {
-                outputDirectory.mkdirs();
-            }
-
+            createOutputPathIfRequired();
             getLog().info("Generating reports...");
             ReportConsole reportConsole = Generator
-                    .apply(sourceDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath(), prefix(), timestamp, template,
-                            countSkippedAsFailure, countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion,
-                            customAttributes());
+                    .apply(joinResultSourceStrings(), outputPath.getAbsolutePath(), prefix(), timestamp, template, countSkippedAsFailure,
+                            countPendingAsFailure, countUndefinedAsFailure, countMissingAsFailure, projectName, projectVersion, customAttributes());
             //TODO Remove once zip functionality has been added to donut
             zipDonutReport();
 
@@ -131,12 +128,29 @@ public class DonutMojo extends AbstractMojo {
                 throw new MojoExecutionException("BUILD FAILED - Check Report For Details");
             }
         } catch (Exception e) {
-            throw new MojoExecutionException("Error Found:", e);
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
+    }
+
+    private String joinResultSourceStrings() throws MojoExecutionException {
+        for (ResultSource resultSource : resultSources) {
+            if (!resultSource.getDirectory().exists()) {
+                throw new MojoExecutionException(
+                        String.format("BUILD FAILED - The source directory does not exist: %s", resultSource.getDirectory().getAbsolutePath()));
+            }
+        }
+        return resultSources.stream().map(ResultSource::toString).collect(Collectors.joining(","));
+    }
+
+    private void createOutputPathIfRequired() {
+        if (!outputPath.exists()) {
+            outputPath.mkdirs();
         }
     }
 
     private scala.collection.mutable.Map<String, String> customAttributes() {
-        return JavaConverters.mapAsScalaMapConverter(customAttributes.stream().collect(Collectors.toMap(c -> c.getName(), c -> c.getValue())))
+        return JavaConverters
+                .mapAsScalaMapConverter(customAttributes.stream().collect(Collectors.toMap(CustomAttribute::getName, CustomAttribute::getValue)))
                 .asScala();
     }
 
@@ -145,11 +159,14 @@ public class DonutMojo extends AbstractMojo {
     }
 
     private void zipDonutReport() throws IOException, ArchiveException {
-        Optional<File> file = FileUtils.listFiles(outputDirectory, new RegexFileFilter("^(.*)donut-report.html$"), TrueFileFilter.INSTANCE).stream().findFirst();
+        Optional<File> file = FileUtils.listFiles(outputPath, new RegexFileFilter("^(.*)donut-report.html$"), TrueFileFilter.INSTANCE).stream()
+                .findFirst();
         if (!file.isPresent())
-            throw new FileNotFoundException(String.format("Cannot find a donut report in folder: %s", outputDirectory.getAbsolutePath()));
-        File zipFile = new File(outputDirectory, FilenameUtils.removeExtension(file.get().getName()) + ".zip");
-        try (OutputStream os = new FileOutputStream(zipFile); ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP, os); BufferedInputStream is = new BufferedInputStream(new FileInputStream(file.get()))) {
+            throw new FileNotFoundException(String.format("Cannot find a donut report in folder: %s", outputPath.getAbsolutePath()));
+        File zipFile = new File(outputPath, FilenameUtils.removeExtension(file.get().getName()) + ".zip");
+        try (OutputStream os = new FileOutputStream(zipFile);
+                ArchiveOutputStream aos = new ArchiveStreamFactory().createArchiveOutputStream(ArchiveStreamFactory.ZIP, os);
+                BufferedInputStream is = new BufferedInputStream(new FileInputStream(file.get()))) {
             aos.putArchiveEntry(new ZipArchiveEntry(file.get().getName()));
             IOUtils.copy(is, aos);
             aos.closeArchiveEntry();

@@ -3,14 +3,14 @@
     <groupId>report.donut</groupId>
     <artifactId>donut-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.1-SNAPSHOT</version>
     <name>Donut Maven Plugin</name>
     <url>http://maven.apache.org</url>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
 
     <description>Sweet reports for the icing over your automated tests</description>
@@ -86,9 +86,9 @@
             <version>3.4</version>
         </dependency>
         <dependency>
-            <groupId>io.magentys</groupId>
+            <groupId>report.donut</groupId>
             <artifactId>donut</artifactId>
-            <version>0.0.4</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.12</version>
+            <version>1.18</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -118,9 +118,6 @@
         </dependency>
 
     </dependencies>
-
-
-
 
     <build>
         <plugins>
@@ -216,7 +213,7 @@
                                 <goal>clean</goal>
                                 <goal>test-compile</goal>
                             </goals>
-                            <parallelThreads>5</parallelThreads>
+                            <parallelThreads>1</parallelThreads>
                         </configuration>
                         <executions>
                             <execution>
