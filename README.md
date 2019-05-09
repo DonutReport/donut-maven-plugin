@@ -14,7 +14,7 @@ in your `pom.xml` add the plugin with the following configuration:
 <plugin>
     <groupId>report.donut</groupId>
     <artifactId>donut-maven-plugin</artifactId>
-    <version>0.0.6</version>
+    <version>1.2.1</version>
     <executions>
         <execution>
             <id>execution</id>
@@ -23,12 +23,18 @@ in your `pom.xml` add the plugin with the following configuration:
                 <goal>generate</goal>
             </goals>
             <configuration>
-                <sourceDirectory>${project.build.directory}/cucumber-reports</sourceDirectory>
-                <outputDirectory>${project.build.directory}/donut</outputDirectory>
+                <resultSources>
+                    <resultSource>
+                        <!-- optional format, defaults to cucumber -->
+                        <format>cucumber</format>
+                        <directory>${project.build.directory}/cucumber-reports</directory>
+                    </resultSource>
+                </resultSources>
+                <outputPath>${project.build.directory}/donut</outputPath>
                 <timestamp>${maven.build.timestamp}</timestamp>
                 <template>default</template>
                 <projectName>${project.name}</projectName>
-                <!-- optional -->
+                <!-- optional customAttributes -->
                 <customAttributes>
                    <customAttribute>
                       <name>My Custom 1</name>
@@ -45,14 +51,14 @@ in your `pom.xml` add the plugin with the following configuration:
 </plugin>
 ```
 
-For older versions, use groupId as `io.magentys` and appropriate version.
+For older versions, use groupId as `io.magentys` and an appropriate version.
 
 
 #### all configuration parameters
 
 ```
-<sourceDirectory>
-<outputDirectory>
+<resultSources>
+<outputPath>
 <prefix>
 <timestamp>
 <template>
@@ -66,8 +72,8 @@ For older versions, use groupId as `io.magentys` and appropriate version.
 ```
 
 default values:
-* **sourceDirectory** : is mandatory and it should be the directory that hold the generated JSON files to be visualised.
-* **outputDirectory** : by default a `donut` folder will be generated
+* **resultSources** : is mandatory and it should be specify multiple result sources that detail the result format and location.
+* **outputPath** : by default a `donut` folder will be generated
 * **prefix** : the generated file is `donut-report.html`, however you can specify prefix i.e. `myproject-`
 * **timestamp** : refers to the start time of your execution. If not specified by the user reports will use `now`
 * **template** : donut supports 2 themes, `default` and `light`. `default` is the default value.
