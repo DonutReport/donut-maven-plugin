@@ -14,7 +14,7 @@ in your `pom.xml` add the plugin with the following configuration:
 <plugin>
     <groupId>report.donut</groupId>
     <artifactId>donut-maven-plugin</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <executions>
         <execution>
             <id>execution</id>
