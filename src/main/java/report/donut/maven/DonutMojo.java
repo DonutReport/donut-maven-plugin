@@ -56,7 +56,7 @@ public class DonutMojo extends AbstractMojo {
     /**
      * Location for the donut report. Default is ${project.build.directory}/donut
      */
-    @Parameter(property = "outputPath", defaultValue = "${project.build.directory}/donut")
+    @Parameter(property = "outputPath", defaultValue = "${project.build.directory}/donut", required = true)
     private File outputPath;
 
     /**
@@ -106,6 +106,10 @@ public class DonutMojo extends AbstractMojo {
         if (skip) {
             getLog().info("Skipping generating reports...");
             return;
+        }
+
+        if (resultSources.isEmpty()) {
+            throw new MojoExecutionException("Required parameter `resultSources` not set.");
         }
 
         try {

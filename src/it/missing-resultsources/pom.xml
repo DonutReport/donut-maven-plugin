@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>report.donut.it</groupId>
-    <artifactId>multiple-resultsources</artifactId>
+    <artifactId>missing-resultsources</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <description>Generate Donut report</description>
@@ -35,17 +35,9 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <resultSources>
-                                <resultSource>
-                                    <directory>@project.basedir@/src/it/results/cucumber1</directory>
-                                </resultSource>
-                                <resultSource>
-                                    <directory>@project.basedir@/src/it/results/cucumber2</directory>
-                                </resultSource>
-                            </resultSources>
-                            <outputPath>@project.build.directory@/it/multiple-resultsources/donut</outputPath>
+                            <outputPath>@project.build.directory@/it/missing-resultsources/donut</outputPath>
                             <template>default</template>
-                            <projectName>multiple-resultsources</projectName>
+                            <projectName>missing-resultsources</projectName>
                             <projectVersion>0.1-SNAPSHOT</projectVersion>
                         </configuration>
                     </execution>
